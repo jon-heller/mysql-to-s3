@@ -6,20 +6,22 @@
 echo -e " "
 echo -e " .  ____  .    ______________________________"
 echo -e " |/      \|   |                              |"
-echo -e "[| \e[1;31mâ™¥    â™¥\e[00m |]  | S3 MySQL Backup Script v.0.1 |"
-echo -e " |___==___|  /                Â© oodavid 2012 |"
+echo -e "[| \e[1;31mâ™¥    â™¥\e[00m |]  | S3 MySQL Backup Script|"
+echo -e " |___==___|  /                               |"
 echo -e "              |______________________________|"
 echo -e " "
 
 # Basic variables
-mysqlpass="ROOTPASSWORD"
+MYSQLUSER="user"
+MYSQLPASS="password"
+MYSQLHOST="localhost"
 bucket="s3://bucketname"
 
 # Timestamp (sortable AND readable)
 stamp=`date +"%s - %A %d %B %Y @ %H%M"`
 
 # List all the databases
-databases=`mysql -u root -p$mysqlpass -e "SHOW DATABASES;" | tr -d "| " | grep -v "\(Database\|information_schema\|performance_schema\|mysql\|test\)"`
+databases=`mysql -h $MYSQLHOST -u $MYSQLUSER -p$MYSQLPASS -e "SHOW DATABASES;" | tr -d "| " | grep -v "\(Database\|information_schema\|performance_schema\|mysql\|test\)"`
 
 # Feedback
 echo -e "Dumping to \e[1;32m$bucket/$stamp/\e[00m"
@@ -37,7 +39,7 @@ for db in $databases; do
 
   # Dump and zip
   echo -e "  creating \e[0;35m$tmpfile\e[00m"
-  mysqldump -u root -p$mysqlpass --force --opt --databases "$db" | gzip -c > "$tmpfile"
+  mysqldump -h $MYSQLHOST -u $MYSQLUSER -p$MYSQLPASS --force --opt --databases "$db" | gzip -c > "$tmpfile"
 
   # Upload
   echo -e "  uploading..."

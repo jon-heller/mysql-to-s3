@@ -44,3 +44,5 @@ If for some reason you put this script in a public folder (not sure why you woul
         Order allow,deny
         Deny from all
     </Files>
+
+### This script initally forked from https://gist.github.com/2206527 -- thank you!
